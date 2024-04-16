@@ -1,3 +1,12 @@
+#execute the following commands to move the data from csv to postgre server
+python src\transfer_sales_data.py
+
+# execute the following command to check the data in the postgre server
+docker-compose exec postgres psql -U postgres -d my_database
+
+# execute the following command to check the data in the postgre server
+SELECT * FROM sales_data LIMIT 5;
+
 # Data Engineering Challenge
 
 ## Problem Statement
