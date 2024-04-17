@@ -1,30 +1,58 @@
-import pandas as pd
+import psycopg2
+from collections import defaultdict
 
-def process_data(data):
-    # Calculate total profit for each transaction
-    data['TotalProfit'] = data['Quantity'] * (data['SalePrice'] - data['PurchasePrice'])
+
+def connect_to_database():
+    # Connect to the PostgreSQL database
+    conn = psycopg2.connect(
+        dbname="my_database", user="postgres", password="password", host="localhost"
+    )
+    return conn
+
+
+def fetch_data(conn):
+    # Fetch data from the database
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT transaction_id , product_id , quantity ,sale_price , purchase_price FROM sales_data;"""
+    )
+    rows = cur.fetchall()
+    cur.close()
+    return rows
+
+
+def analyze_sales_data(rows):
+    transaction_profit = {}
+    product_profit = defaultdict(float)
+    product_quantity = defaultdict(int)
+
+    for row in rows:
+        transaction_id, product_id, quantity, sale_price, purchase_price = row
+        total_profit = round(quantity * (sale_price - purchase_price), 2)
+        transaction_profit[transaction_id] = total_profit
+        product_profit[product_id] += total_profit
+        product_quantity[product_id] += quantity
+
+    top_products = sorted(product_quantity, key=product_quantity.get, reverse=True)[:2]
     
-    # Calculate total profit for each product
-    product_profit = data.groupby('Product')['TotalProfit'].sum().reset_index()
+    return transaction_profit, dict(product_profit), top_products
+
+
+def process_data():
+    conn = connect_to_database()
+    rows = fetch_data(conn)
+    conn.close()
+
+    transaction_profit, product_profit, top_products = analyze_sales_data(rows)
+
+    return transaction_profit, product_profit, top_products
+
+
+def main():
+    transaction_profit, product_profit, top_products = process_data()
+    result = (transaction_profit, product_profit, top_products)
+    print(result)
+    return result    
     
-    # Identify the top 2 selling products based on total quantity
-    top_products = data.groupby('Product')['Quantity'].sum().nlargest(2).reset_index()
-    
-    return product_profit, top_products
-
-# Example usage
-data = pd.DataFrame({
-    'TransactionID': [1, 2, 3, 4, 5],
-    'Product': ['A', 'B', 'A', 'B', 'C'],
-    'Quantity': [10, 20, 15, 25, 30],
-    'SalePrice': [100, 200, 150, 250, 300],
-    'PurchasePrice': [50, 100, 75, 125, 150]
-})
-
-product_profit, top_products = process_data(data)
-
-print("Product Profit:")
-print(product_profit)
-
-print("\nTop Selling Products:")
-print(top_products)
+if __name__ == "__main__":
+    main()
