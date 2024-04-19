@@ -1,11 +1,70 @@
-#execute the following commands to move the data from csv to postgre server
-python src\transfer_sales_data.py
+# Sales Data Analysis Project
 
-# execute the following command to check the data in the postgre server
-docker-compose exec postgres psql -U postgres -d my_database
+This project involves cleaning, analyzing, and storing sales transaction data. The data is initially provided in a CSV file, `sales_data.csv`, and is processed using Python and stored in a PostgreSQL database.
 
-# execute the following command to check the data in the postgre server
-SELECT * FROM sales_data LIMIT 5;
+## Project Structure
+
+The project has the following structure:
+
+- `data_analysis.ipynb`: A Jupyter notebook for cleaning the dataset and analyzing the relation between Sale Price and Quantity for some products.
+- `src/transfer_sales_data.py`: A Python script to transfer the cleaned data from `sales_data_cleaned.csv` to a PostgreSQL database.
+- `src/app.py`: This is the main Python script for the application to fetch data from the database and perform the analysis.
+- `docker-compose.yml`: A Docker Compose file to run a PostgreSQL server.
+
+## Getting Started
+
+1. Create a Python virtual environment and activate it:
+
+    For Windows:
+    ```
+    python -m venv env
+    env\Scripts\activate
+    ```
+
+    For Unix or MacOS:
+    ```
+    python3 -m venv env
+    source env/bin/activate
+    ```
+
+2. Install the required Python packages:
+
+    ```
+    pip install -r requirements.txt
+    ```
+
+3. Run the Jupyter notebook `data_analysis.ipynb` to clean the dataset and perform the initial analysis. This will generate a cleaned CSV file, `sales_data_cleaned.csv`.
+
+4. Start the PostgreSQL server with Docker Compose:
+
+    ```
+    docker-compose up -d
+    ```
+
+5. Run the Python script to transfer the cleaned data to the PostgreSQL database:
+
+    ```
+    python src/transfer_sales_data.py
+    ```
+
+6. You can then connect to the PostgreSQL server to query the data:
+
+    ```
+    docker-compose exec postgres psql -U postgres -d my_database
+    ```
+   Execute the following command to check the data in the postgre server
+     ```  
+    SELECT * FROM sales_data LIMIT 5;
+     ```
+
+7. Run the main Python script to process the data and get the desired results:
+  
+      ```
+      python src/app.py
+      ```
+
+
+## Notes / Tasks
 
 # Data Engineering Challenge
 
