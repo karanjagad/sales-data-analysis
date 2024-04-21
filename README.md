@@ -56,6 +56,7 @@ The project has the following structure:
      ```  
     SELECT * FROM sales_data LIMIT 5;
      ```
+    Exit the PostgreSQL shell by typing `\q`.
 
 7. Run the main Python script to process the data and get the desired results:
   
