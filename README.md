@@ -13,7 +13,7 @@ The project has the following structure:
 
 ## Getting Started
 
-1. Create a Python virtual environment and activate it:
+1. Create a Python virtual environment and activate it (Project is developed in Python 3.9.0):
 
     For Windows:
     ```

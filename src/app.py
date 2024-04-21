@@ -1,5 +1,10 @@
 import psycopg2
 from collections import defaultdict
+import os
+import logging
+
+log_file_path = os.path.join("log", "app.log")
+logging.basicConfig(filename=log_file_path,level=logging.INFO)
 
 
 def connect_to_database():
@@ -13,6 +18,8 @@ def connect_to_database():
     conn = psycopg2.connect(
         dbname="my_database", user="postgres", password="password", host="localhost"
     )
+
+    logging.info("Connected to the database!")
     return conn
 
 
@@ -32,6 +39,8 @@ def fetch_data(conn):
     )
     rows = cur.fetchall()
     cur.close()
+
+    logging.info("Data fetched successfully!")
     return rows
 
 
@@ -60,6 +69,7 @@ def analyze_sales_data(rows):
 
     top_products = sorted(product_quantity, key=product_quantity.get, reverse=True)[:2]
 
+    logging.info("Sales data analyzed successfully!")
     return transaction_profit, dict(product_profit), top_products
 
 
@@ -72,9 +82,12 @@ def main():
     Returns:
         tuple: A tuple containing the transaction profit, product profit, and top products.
     """
+
+    logging.info("Starting the application...")
     conn = connect_to_database()
     rows = fetch_data(conn)
     conn.close()
+    logging.info("Database connection closed.")
     transaction_profit, product_profit, top_products = analyze_sales_data(rows)
     result = (transaction_profit, product_profit, top_products)
     print(result)

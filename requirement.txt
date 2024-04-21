@@ -1,4 +1,4 @@
-pandas
-sqlalchemy
-psycopg2
-matplotlib
+pandas==1.2.4
+sqlalchemy==1.4.15
+psycopg2==2.8.6
+matplotlib==3.4.2
